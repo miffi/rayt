@@ -1,12 +1,12 @@
-use crate::{hittable, ray};
+use crate::{hittable, ray, vec};
 
 pub struct Sphere {
-    center: ray::Vec3,
+    center: vec::Vec3,
     radius: f64,
 }
 
 impl Sphere {
-    pub fn new(center: ray::Vec3, radius: f64) -> Self {
+    pub fn new(center: vec::Vec3, radius: f64) -> Self {
         Sphere { center, radius }
     }
 }

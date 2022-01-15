@@ -1,13 +1,13 @@
-use crate::ray;
+use crate::{ray, vec};
 
 pub struct HitRecord {
-    p: ray::Vec3,
-    normal: ray::Vec3,
+    p: vec::Vec3,
+    normal: vec::Vec3,
     t: f64,
     front_face: bool,
 }
 
-pub fn correct_normal_direction(r: &ray::Ray, outward_normal: ray::Vec3) -> (bool, ray::Vec3) {
+pub fn correct_normal_direction(r: &ray::Ray, outward_normal: vec::Vec3) -> (bool, vec::Vec3) {
     let front_face = r.direction().dot(&outward_normal) < 0.0;
     (
         front_face,
@@ -20,7 +20,7 @@ pub fn correct_normal_direction(r: &ray::Ray, outward_normal: ray::Vec3) -> (boo
 }
 
 impl HitRecord {
-    pub fn new(p: ray::Vec3, (front_face, normal): (bool, ray::Vec3), t: f64) -> Self {
+    pub fn new(p: vec::Vec3, (front_face, normal): (bool, vec::Vec3), t: f64) -> Self {
         HitRecord {
             p,
             normal,
@@ -29,7 +29,7 @@ impl HitRecord {
         }
     }
 
-    pub fn normal(&self) -> &ray::Vec3 {
+    pub fn normal(&self) -> &vec::Vec3 {
         &self.normal
     }
 
@@ -37,7 +37,7 @@ impl HitRecord {
         self.t
     }
 
-    pub fn p(&self) -> ray::Vec3 {
+    pub fn p(&self) -> vec::Vec3 {
         self.p
     }
 }

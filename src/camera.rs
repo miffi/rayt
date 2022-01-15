@@ -1,13 +1,13 @@
-use crate::ray;
+use crate::{ray, vec};
 
 use nalgebra as na;
 
 pub struct Camera {
-    origin: ray::Vec3,
-    lower_left_corner: ray::Vec3,
+    origin: vec::Vec3,
+    lower_left_corner: vec::Vec3,
 
-    horizontal: ray::Vec3,
-    vertical: ray::Vec3,
+    horizontal: vec::Vec3,
+    vertical: vec::Vec3,
 }
 
 impl Camera {
@@ -39,19 +39,19 @@ impl Camera {
         )
     }
 
-    pub fn origin(&self) -> &ray::Vec3 {
+    pub fn origin(&self) -> &vec::Vec3 {
         &self.origin
     }
 
-    pub fn lower_left_corner(&self) -> &ray::Vec3 {
+    pub fn lower_left_corner(&self) -> &vec::Vec3 {
         &self.lower_left_corner
     }
 
-    pub fn horizontal(&self) -> &ray::Vec3 {
+    pub fn horizontal(&self) -> &vec::Vec3 {
         &self.horizontal
     }
 
-    pub fn vertical(&self) -> &ray::Vec3 {
+    pub fn vertical(&self) -> &vec::Vec3 {
         &self.vertical
     }
 }

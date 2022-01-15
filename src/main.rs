@@ -9,17 +9,18 @@ mod hittable;
 mod hittable_list;
 mod ray;
 mod sphere;
+mod vec;
 
 fn ray_color(
     ray: &ray::Ray,
     world: Box<&dyn hittable::Hittable>,
     depth: u32,
     rng: &mut rand::rngs::ThreadRng,
-) -> ray::Vec3 {
+) -> vec::Vec3 {
     if depth <= 0 {
         na::vector![0.0, 0.0, 0.0]
     } else if let Some(record) = world.hit(ray, 0.001, f64::INFINITY) {
-        let target = record.p() + record.normal() + ray::random_unit_vector(rng);
+        let target = record.p() + record.normal() + vec::random::unit_vector(rng);
         0.5 * ray_color(
             &ray::Ray::new(record.p(), target - record.p()),
             world,
