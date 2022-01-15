@@ -8,7 +8,9 @@ pub struct HittableList {
 
 impl HittableList {
     pub fn new() -> Self {
-        HittableList { objects: Vec::new() }
+        HittableList {
+            objects: Vec::new(),
+        }
     }
     pub fn add(&mut self, object: Rc<dyn hittable::Hittable>) {
         self.objects.push(object)

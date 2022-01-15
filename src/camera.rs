@@ -1,6 +1,6 @@
 use crate::ray;
 
-use nalgebra_glm as glm;
+use nalgebra as na;
 
 pub struct Camera {
     origin: ray::Vec3,
@@ -17,12 +17,12 @@ impl Camera {
         let viewport_width = aspect_ratio * viewport_height;
         let focal_length = 1.0;
 
-        let origin = glm::vec3(0.0, 0.0, 0.0);
-        let horizontal = glm::vec3(viewport_width, 0.0, 0.0);
-        let vertical = glm::vec3(0.0, viewport_height, 0.0);
+        let origin = na::vector![0.0, 0.0, 0.0];
+        let horizontal = na::vector![viewport_width, 0.0, 0.0];
+        let vertical = na::vector![0.0, viewport_height, 0.0];
 
         let lower_left_corner =
-            origin - horizontal / 2.0 - vertical / 2.0 - glm::vec3(0.0, 0.0, focal_length);
+            origin - horizontal / 2.0 - vertical / 2.0 - na::vector!(0.0, 0.0, focal_length);
 
         Camera {
             origin,

@@ -1,6 +1,29 @@
-use nalgebra_glm as glm;
+use nalgebra as na;
+use rand::{self, Rng, SeedableRng};
 
-pub type Vec3 = glm::DVec3;
+pub type Vec3 = na::Vector3<f64>;
+
+pub fn random_in_unit_sphere(rng: &mut rand::rngs::ThreadRng) -> Vec3 {
+    loop {
+        let x = Vec3::from_fn(|_, _| rng.gen_range(-1.0..1.0));
+        if x.norm_squared() < 1.0 {
+            return x;
+        }
+    }
+}
+
+pub fn random_unit_vector(rng: &mut rand::rngs::ThreadRng) -> Vec3 {
+    random_in_unit_sphere(rng)
+}
+
+pub fn random_in_hemisphere(normal: &Vec3, rng: &mut rand::rngs::ThreadRng) -> Vec3 {
+    let in_unit_sphere = random_in_unit_sphere(rng);
+    if in_unit_sphere.dot(&normal) > 0.0 {
+        in_unit_sphere
+    } else {
+        -in_unit_sphere
+    }
+}
 
 pub struct Ray {
     origin: Vec3,
