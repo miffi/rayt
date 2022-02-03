@@ -1,9 +1,12 @@
-use crate::{ray, vec};
+use std::rc::Rc;
+
+use crate::{material, ray, vec};
 
 pub struct HitRecord {
     p: vec::Vec3,
     normal: vec::Vec3,
     t: f64,
+    material: Rc<dyn material::Material>,
     front_face: bool,
 }
 
@@ -20,11 +23,17 @@ pub fn correct_normal_direction(r: &ray::Ray, outward_normal: vec::Vec3) -> (boo
 }
 
 impl HitRecord {
-    pub fn new(p: vec::Vec3, (front_face, normal): (bool, vec::Vec3), t: f64) -> Self {
+    pub fn new(
+        p: vec::Vec3,
+        (front_face, normal): (bool, vec::Vec3),
+        material: Rc<dyn material::Material>,
+        t: f64,
+    ) -> Self {
         HitRecord {
             p,
             normal,
             t,
+            material,
             front_face,
         }
     }
@@ -39,6 +48,14 @@ impl HitRecord {
 
     pub fn p(&self) -> vec::Vec3 {
         self.p
+    }
+
+    pub fn material(&self) -> &dyn material::Material {
+        self.material.as_ref()
+    }
+
+    pub fn front_face(&self) -> bool {
+        self.front_face
     }
 }
 

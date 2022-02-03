@@ -1,13 +1,20 @@
-use crate::{hittable, ray, vec};
+use std::rc::Rc;
+
+use crate::{hittable, material, ray, vec};
 
 pub struct Sphere {
     center: vec::Vec3,
     radius: f64,
+    material: Rc<dyn material::Material>,
 }
 
 impl Sphere {
-    pub fn new(center: vec::Vec3, radius: f64) -> Self {
-        Sphere { center, radius }
+    pub fn new(center: vec::Vec3, radius: f64, material: Rc<dyn material::Material>) -> Self {
+        Sphere {
+            center,
+            radius,
+            material,
+        }
     }
 }
 
@@ -35,6 +42,7 @@ impl hittable::Hittable for Sphere {
         Some(hittable::HitRecord::new(
             r.at(root), // point of intersection
             hittable::correct_normal_direction(r, (r.at(root) - self.center) / self.radius), // normal made to face outward
+            self.material.clone(),
             root,
         ))
     }
