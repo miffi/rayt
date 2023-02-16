@@ -1,2 +1,7 @@
 /build
 file.ppm
+
+
+# Added by cargo
+
+/target
