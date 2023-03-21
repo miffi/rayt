@@ -1,5 +1,6 @@
 use crate::util;
 use nalgebra as na;
+use std::ops::Range;
 
 pub type Vec = na::Vector3<f64>;
 pub type Point = na::Vector3<f64>;
@@ -27,17 +28,17 @@ pub fn random() -> Vec {
     Vec::new(util::random_f64(), util::random_f64(), util::random_f64())
 }
 
-pub fn random_range(min: f64, max: f64) -> Vec {
+pub fn random_range(range: Range<f64>) -> Vec {
     Vec::new(
-        util::random_f64_range(min, max),
-        util::random_f64_range(min, max),
-        util::random_f64_range(min, max),
+        util::random_f64_range(range.clone()),
+        util::random_f64_range(range.clone()),
+        util::random_f64_range(range.clone()),
     )
 }
 
 pub fn random_in_unit_sphere() -> Vec {
     loop {
-        let p = random_range(-1.0, 1.0);
+        let p = random_range(-1.0..1.0);
         if p.norm_squared() < 1.0 {
             return p;
         }
@@ -51,8 +52,8 @@ pub fn random_unit_vector() -> Vec {
 pub fn random_in_unit_disk() -> Vec {
     loop {
         let p = Vec::new(
-            util::random_f64_range(-1.0, 1.0),
-            util::random_f64_range(-1.0, 1.0),
+            util::random_f64_range(-1.0..1.0),
+            util::random_f64_range(-1.0..1.0),
             0.0,
         );
         if p.norm_squared() < 1.0 {

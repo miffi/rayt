@@ -1,7 +1,10 @@
+use crate::aabb::Aabb;
 use crate::hittable as h;
 use crate::material::Material;
 use crate::ray::Ray;
-use crate::vec::Point;
+use crate::vec::{Point, Vec};
+use std::f64::consts::PI;
+use std::ops::Range;
 use std::rc::Rc;
 
 pub struct Sphere {
@@ -18,10 +21,17 @@ impl Sphere {
             material,
         }
     }
+
+    fn get_uv(p: &Point) -> (f64, f64) {
+        let theta = (-p.y).acos();
+        let phi = (-p.z).atan2(p.x) + PI;
+
+        (phi / (2.0 * PI), theta / PI)
+    }
 }
 
 impl h::Hittable for Sphere {
-    fn hit(&self, r: &Ray, (t_min, t_max): (f64, f64)) -> Option<h::HitRecord> {
+    fn hit(&self, r: &Ray, range: Range<f64>) -> Option<h::HitRecord> {
         let oc = r.origin() - self.center;
 
         let a = r.direction().dot(r.direction());
@@ -35,18 +45,28 @@ impl h::Hittable for Sphere {
 
         let sqrtd = discriminant.sqrt();
         let mut root = (-half_b - sqrtd) / a;
-        if root < t_min || t_max < root {
+        if !range.contains(&root) {
             root = (-half_b + sqrtd) / a;
-            if root < t_min || t_max < root {
+            if !range.contains(&root) {
                 return None;
             }
         }
 
+        let outward_normal = (r.at(root) - self.center) / self.radius;
+
         Some(h::HitRecord::new(
             root,
             r,
-            (r.at(root) - self.center) / self.radius,
-            self.material.clone()
+            outward_normal,
+            self.material.clone(),
+            Self::get_uv(&outward_normal)
+        ))
+    }
+
+    fn bounding_box(&self, _time_range: Range<f64>) -> Option<Aabb> {
+        Some(Aabb::new(
+            self.center - Vec::from_element(self.radius),
+            self.center + Vec::from_element(self.radius),
         ))
     }
 }

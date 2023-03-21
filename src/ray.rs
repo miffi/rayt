@@ -1,16 +1,14 @@
-use crate::vec::{Vec, Point};
+use crate::vec::{Point, Vec};
 
 pub struct Ray {
     orig: Point,
     dir: Vec,
+    time: f64,
 }
 
 impl Ray {
-    pub fn new(orig: Vec, dir: Vec) -> Ray {
-        Ray {
-            orig,
-            dir,
-        }
+    pub fn new(orig: Vec, dir: Vec, time: f64) -> Ray {
+        Ray { orig, dir, time }
     }
 
     pub fn at(&self, t: f64) -> Vec {
@@ -27,5 +25,9 @@ impl Ray {
 
     pub fn direction(&self) -> &Vec {
         &self.dir
+    }
+
+    pub fn time(&self) -> f64 {
+        self.time
     }
 }

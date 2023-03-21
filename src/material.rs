@@ -1,5 +1,8 @@
+use std::rc::Rc;
+
 use crate::hittable::HitRecord;
 use crate::ray::Ray;
+use crate::texture::{SolidColor, Texture};
 use crate::util;
 use crate::vec::{self, Color, Vec};
 
@@ -8,17 +11,25 @@ pub trait Material {
 }
 
 pub struct Lambertian {
-    albedo: Color,
+    albedo: Rc<dyn Texture>,
 }
 
 impl Lambertian {
     pub fn new(albedo: Color) -> Self {
-        Self { albedo }
+        Self {
+            albedo: Rc::new(SolidColor::from_color(albedo)),
+        }
+    }
+
+    pub fn from_texture(albedo: Rc<dyn Texture>) -> Self {
+        Self {
+            albedo,
+        }
     }
 }
 
 impl Material for Lambertian {
-    fn scatter(&self, _r: &Ray, rec: &HitRecord) -> Option<(Ray, Color)> {
+    fn scatter(&self, r: &Ray, rec: &HitRecord) -> Option<(Ray, Color)> {
         let scatter_direction = rec.normal + vec::random_unit_vector();
         Some((
             Ray::new(
@@ -28,8 +39,9 @@ impl Material for Lambertian {
                 } else {
                     scatter_direction
                 },
+                r.time(),
             ),
-            self.albedo,
+            self.albedo.value(rec.uv, &rec.p),
         ))
     }
 }
@@ -53,7 +65,11 @@ impl Material for Metal {
         let reflected = vec::reflect(&r.direction().normalize(), &rec.normal);
         if reflected.dot(&rec.normal) > 0.0 {
             Some((
-                Ray::new(rec.p, reflected + self.fuzz * vec::random_in_unit_sphere()),
+                Ray::new(
+                    rec.p,
+                    reflected + self.fuzz * vec::random_in_unit_sphere(),
+                    r.time(),
+                ),
                 self.albedo,
             ))
         } else {
@@ -100,6 +116,7 @@ impl Material for Dielectric {
                 } else {
                     vec::refract(&unit_direction, &rec.normal, refraction_ratio)
                 },
+                r.time(),
             ),
             Color::new(1.0, 1.0, 1.0),
         ))
